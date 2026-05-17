@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Model => DB Tabel
+model Event {
+  id          String       @id @default(uuid()) @db.Uuid
+  ownerUserId String       @map("owner_user_id")
+  title       String
+  description String?
+  location    String?
+  eventDate   DateTime?    @map("event_date") @db.Timestamptz(6)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  //Relation with EventInvite
+  invite      EventInvite?
+  rsvps EventRsvp[]
+
+  @@index([ownerUserId, createdAt(sort: Desc)], map: "idx_events_owner")
+  @@map("events")
+}
+
+model EventInvite {
+  id        String   @id @default(uuid()) @db.Uuid
+  eventId   String   @unique @map("event_id") @db.Uuid
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  //Relation with Event
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  rsvps EventRsvp[]
+
+  @@map("event_invites")
+}
+
+enum RsvpStatus {
+  going
+  maybe
+  not_going
+}
+
+model EventRsvp {
+  id              String     @id @default(uuid()) @db.Uuid
+  eventId         String     @map("event_id") @db.Uuid
+  inviteId        String?     @map("invite_id") @db.Uuid
+  name            String
+  email           String
+  emailNormalized String     @map("email_normalized")
+  status          RsvpStatus
+  respondedAt     DateTime   @default(now()) @map("responded_at") @db.Timestamptz(6)
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  invite EventInvite? @relation(fields: [inviteId], references: [id], onDelete: SetNull)
+
+  @@unique([eventId, emailNormalized])
+  @@index([eventId, respondedAt(sort: Desc)], map: "idx_rsvp_event")
+  @@map("event_rsvps")
+}
