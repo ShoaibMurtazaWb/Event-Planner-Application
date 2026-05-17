@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Event Planner Application
 
-## Getting Started
+A full-stack event planning application built with **Next.js**, **Neon Auth**, **Prisma**, **PostgreSQL**, **Tailwind CSS**, and **shadcn/ui**.
 
-First, run the development server:
+The app allows authenticated users to create events, generate invite links, collect RSVPs from guests, and track attendee responses through a dashboard.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- User sign up and sign in using Neon Auth
+- Protected dashboard for logged-in users
+- User menu with account actions using Neon Auth UI
+- Session-based access control
 
-## Learn More
+### Event Management
 
-To learn more about Next.js, take a look at the following resources:
+- Create new events
+- Add title, description, location, and event date/time
+- View events created by the logged-in user
+- View all public events on the Events page
+- Open individual event detail pages
+- Generate invite links for events
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### RSVP System
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Guests can RSVP through a public invite link
+- RSVP options:
+  - Going
+  - Maybe
+  - Not Going
+- Guests can update their RSVP using the same email
+- RSVP counts update for each event
+- Duplicate RSVP prevention using normalized email
 
-## Deploy on Vercel
+### Dashboard
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Shows events created by the logged-in user
+- Displays RSVP counts for each event
+- Quick access to create and manage events
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Events Page
+
+- Shows events created by all users
+- Displays creator information
+- Allows owners to manage their own events
+- Allows non-owners to RSVP if an invite link exists
+
+### UI
+
+- Built with shadcn/ui components
+- Tailwind CSS v4 styling
+- Dark theme layout
+- Responsive design
+
+---
+
+## Tech Stack
+
+- **Next.js 16**
+- **React 19**
+- **TypeScript**
+- **Prisma 7**
+- **PostgreSQL**
+- **Neon Database**
+- **Neon Auth**
+- **Tailwind CSS v4**
+- **shadcn/ui**
+- **Vercel Deployment**
+
+---
+
+## Project Structure
+
+```txt
+app/
+  auth/
+    [path]/
+      page.tsx
+  dashboard/
+    page.tsx
+  events/
+    page.tsx
+    new/
+      page.tsx
+    [id]/
+      page.tsx
+  invite/
+    [token]/
+      page.tsx
+  layout.tsx
+  globals.css
+
+components/
+  DashboardContent.tsx
+  event-detail-content.tsx
+  invite-rsvp-content.tsx
+  copy-invite-button.tsx
+  ui/
+
+lib/
+  actions/
+    events.ts
+  auth/
+    client.ts
+    server.ts
+  prisma.ts
+
+prisma/
+  schema.prisma
